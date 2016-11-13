@@ -4,13 +4,14 @@ object MonadLibraryUse {
   val value = MonadLibrary.UseCats
 }
 
+import scala.annotation.StaticAnnotation
 import scala.reflect.macros.blackbox
 
-class OnlyInCats {
+class OnlyInCats extends StaticAnnotation {
   def macroTransform(annottees: Any*): Any = macro CatsScalazDistinguisher.onlyInCats
 }
 
-class OnlyInScalaz {
+class OnlyInScalaz extends StaticAnnotation {
   def macroTransform(annottees: Any*): Any = macro CatsScalazDistinguisher.onlyInScalaz
 }
 
