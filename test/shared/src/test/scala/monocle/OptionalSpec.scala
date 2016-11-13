@@ -2,7 +2,7 @@ package monocle
 
 import monocle.law.discipline.{OptionalTests, SetterTests, TraversalTests}
 
-import scalaz._
+import cats.arrow._
 
 class OptionalSpec extends MonocleSuite {
 
@@ -37,7 +37,7 @@ class OptionalSpec extends MonocleSuite {
   }
 
   test("Optional has a Choice instance") {
-    Choice[Optional].choice(headOption[Int], Category[Optional].id[Int]).getOption(-\/(List(1,2,3))) shouldEqual Some(1)
+    Choice[Optional].choice(headOption[Int], Category[Optional].id[Int]).getOption(Left(List(1,2,3))) shouldEqual Some(1)
   }
 
 

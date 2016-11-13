@@ -67,10 +67,10 @@ object Snoc1 extends Snoc1Functions {
   /************************************************************************************************/
   /** Scalaz instances                                                                            */
   /************************************************************************************************/
-  import scalaz.{IList, NonEmptyList}
+  import cats.data.NonEmptyList
 
-  implicit def nelSnoc1[A]:Snoc1[NonEmptyList[A], IList[A], A] = new Snoc1[NonEmptyList[A], IList[A], A]{
-    val snoc1: Iso[NonEmptyList[A], (IList[A], A)] =
-      Iso((nel:NonEmptyList[A]) => nel.init -> nel.last){case (i,l) => NonEmptyList.nel(l, i.reverse).reverse}
+  implicit def nelSnoc1[A]:Snoc1[NonEmptyList[A], List[A], A] = new Snoc1[NonEmptyList[A], List[A], A]{
+    val snoc1: Iso[NonEmptyList[A], (List[A], A)] =
+      Iso((nel:NonEmptyList[A]) => nel.toList.init -> nel.toList.last){case (i,l) => NonEmptyList.fromListUnsafe(NonEmptyList(l, i.reverse).toList.reverse)}
   }
 }

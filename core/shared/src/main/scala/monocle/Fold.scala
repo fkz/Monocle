@@ -1,12 +1,19 @@
 package monocle
 
-import scalaz.std.anyVal._
-import scalaz.std.list._
-import scalaz.std.option._
-import scalaz.syntax.std.boolean._
-import scalaz.syntax.std.option._
-import scalaz.syntax.tag._
-import scalaz.{Choice, Foldable, Maybe, Monoid, \/}
+//import scalaz.std.anyVal._
+//import scalaz.std.list._
+//import scalaz.std.option._
+//import scalaz.syntax.tag._
+
+import cats.instances.boolean._
+import cats.instances.option._
+import cats.instances.list._
+import cats.instances.int._
+import cats.arrow.Choice
+import cats.Foldable
+import cats.Monoid
+import catssupport.Implicits._
+
 
 /**
  * A [[Fold]] can be seen as a [[Getter]] with many targets or
@@ -166,7 +173,7 @@ object Fold extends FoldInstances {
 
 sealed abstract class FoldInstances {
   implicit val foldChoice: Choice[Fold] = new Choice[Fold]{
-    def choice[A, B, C](f: => Fold[A, C], g: => Fold[B, C]): Fold[A \/ B, C] =
+    def choice[A, B, C](f: Fold[A, C], g: Fold[B, C]): Fold[A \/ B, C] =
       f choice g
 
     def id[A]: Fold[A, A] =

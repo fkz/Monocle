@@ -1,13 +1,18 @@
 package monocle
 
-import scalaz.Id.Id
-import scalaz.std.anyVal._
-import scalaz.std.list._
-import scalaz.std.option._
-import scalaz.syntax.std.boolean._
-import scalaz.syntax.std.option._
-import scalaz.syntax.tag._
-import scalaz.{Applicative, Choice, Const, Functor, Maybe, Monoid, Traverse, \/}
+//import scalaz.Id.Id
+//import scalaz.std.anyVal._
+import cats.instances.list._
+//import scalaz.std.option._
+//import scalaz.syntax.std.boolean._
+//import scalaz.syntax.std.option._
+//import scalaz.syntax.tag._
+
+import cats.{Applicative, Functor, Monoid, Traverse, Id}
+import catssupport.Implicits._
+import cats.data.Const
+import cats.instances.int._
+import cats.arrow.Choice
 
 
 /**
@@ -190,31 +195,31 @@ object PTraversal extends TraversalInstances {
   def apply2[S, T, A, B](get1: S => A, get2: S => A)(_set: (B, B, S) => T): PTraversal[S, T, A, B] =
     new PTraversal[S, T, A, B] {
       def modifyF[F[_]: Applicative](f: A => F[B])(s: S): F[T] =
-        Applicative[F].apply2(f(get1(s)), f(get2(s)))(_set(_, _, s))
+        Applicative[F].map2(f(get1(s)), f(get2(s)))(_set(_, _, s))
     }
 
   def apply3[S, T, A, B](get1: S => A, get2: S => A, get3: S => A)(_set: (B, B, B, S) => T): PTraversal[S, T, A, B] =
     new PTraversal[S, T, A, B] {
       def modifyF[F[_]: Applicative](f: A => F[B])(s: S): F[T] =
-        Applicative[F].apply3(f(get1(s)), f(get2(s)), f(get3(s)))(_set(_, _, _, s))
+        Applicative[F].map3(f(get1(s)), f(get2(s)), f(get3(s)))(_set(_, _, _, s))
     }
 
   def apply4[S, T, A, B](get1: S => A, get2: S => A, get3: S => A, get4: S => A)(_set: (B, B, B, B, S) => T): PTraversal[S, T, A, B] =
     new PTraversal[S, T, A, B] {
       def modifyF[F[_]: Applicative](f: A => F[B])(s: S): F[T] =
-        Applicative[F].apply4(f(get1(s)), f(get2(s)), f(get3(s)), f(get4(s)))(_set(_, _, _, _, s))
+        Applicative[F].map4(f(get1(s)), f(get2(s)), f(get3(s)), f(get4(s)))(_set(_, _, _, _, s))
     }
 
   def apply5[S, T, A, B](get1: S => A, get2: S => A, get3: S => A, get4: S => A, get5: S => A)(_set: (B, B, B, B, B, S) => T): PTraversal[S, T, A, B] =
     new PTraversal[S, T, A, B] {
       def modifyF[F[_]: Applicative](f: A => F[B])(s: S): F[T] =
-        Applicative[F].apply5(f(get1(s)), f(get2(s)), f(get3(s)), f(get4(s)), f(get5(s)))(_set(_, _, _, _, _, s))
+        Applicative[F].map5(f(get1(s)), f(get2(s)), f(get3(s)), f(get4(s)), f(get5(s)))(_set(_, _, _, _, _, s))
     }
 
   def apply6[S, T, A, B](get1: S => A, get2: S => A, get3: S => A, get4: S => A, get5: S => A, get6: S => A)(_set: (B, B, B, B, B, B, S) => T): PTraversal[S, T, A, B] =
     new PTraversal[S, T, A, B] {
       def modifyF[F[_]: Applicative](f: A => F[B])(s: S): F[T] =
-        Applicative[F].apply6(f(get1(s)), f(get2(s)), f(get3(s)), f(get4(s)), f(get5(s)), f(get6(s)))(_set(_, _, _, _, _, _, s))
+        Applicative[F].map6(f(get1(s)), f(get2(s)), f(get3(s)), f(get4(s)), f(get5(s)), f(get6(s)))(_set(_, _, _, _, _, _, s))
     }
 
 }
@@ -268,7 +273,7 @@ sealed abstract class TraversalInstances {
     def id[A]: Traversal[A, A] =
       Traversal.id
 
-    def choice[A, B, C](f1: => Traversal[A, C], f2: => Traversal[B, C]): Traversal[A \/ B, C] =
+    def choice[A, B, C](f1: Traversal[A, C], f2: Traversal[B, C]): Traversal[A \/ B, C] =
       f1 choice f2
   }
 }

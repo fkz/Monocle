@@ -5,8 +5,10 @@ import monocle.macros.GenIso
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalacheck.Arbitrary._
 
-import scalaz.std.anyVal._
-import scalaz.{Category, Compose, Equal, Split}
+//import scalaz.std.anyVal._
+import cats.arrow.{Category, Compose, Split}
+import cats.Eq
+import catssupport.Implicits._
 
 class IsoSpec extends MonocleSuite {
 
@@ -23,23 +25,23 @@ class IsoSpec extends MonocleSuite {
 
   case class IntWrapper(i: Int)
   implicit val intWrapperGen: Arbitrary[IntWrapper] = Arbitrary(arbitrary[Int].map(IntWrapper.apply))
-  implicit val intWrapperEq = Equal.equalA[IntWrapper]
+  implicit val intWrapperEq = Eq.by[IntWrapper, Int](_.i)
 
   case class IdWrapper[A](value: A)
   implicit def idWrapperGen[A: Arbitrary]: Arbitrary[IdWrapper[A]] = Arbitrary(arbitrary[A].map(IdWrapper.apply))
-  implicit def idWrapperEq[A: Equal]: Equal[IdWrapper[A]] = Equal.equalA
+  implicit def idWrapperEq[A: Eq]: Eq[IdWrapper[A]] = Eq.by[IdWrapper[A], A](_.value)
 
   case object AnObject
   implicit val anObjectGen: Arbitrary[AnObject.type] = Arbitrary(Gen.const(AnObject))
-  implicit val anObjectEq = Equal.equalA[AnObject.type]
+  implicit val anObjectEq = Eq.fromUniversalEquals[AnObject.type]
 
   case class EmptyCase()
   implicit val emptyCaseGen: Arbitrary[EmptyCase] = Arbitrary(Gen.const(EmptyCase()))
-  implicit val emptyCaseEq = Equal.equalA[EmptyCase]
+  implicit val emptyCaseEq = Eq.fromUniversalEquals[EmptyCase]
 
   case class EmptyCaseType[A]()
   implicit def emptyCaseTypeGen[A]: Arbitrary[EmptyCaseType[A]] = Arbitrary(Gen.const(EmptyCaseType()))
-  implicit def emptyCaseTypeEq[A] = Equal.equalA[EmptyCaseType[A]]
+  implicit def emptyCaseTypeEq[A] = Eq.fromUniversalEquals[EmptyCaseType[A]]
 
   val iso = Iso[IntWrapper, Int](_.i)(IntWrapper.apply)
 
@@ -78,7 +80,7 @@ class IsoSpec extends MonocleSuite {
   }
 
   test("mapping") {
-    import scalaz.Id._
+    import cats.{Id, catsInstancesForId=>id}
 
     iso.mapping[Id].get(id.point(IntWrapper(3))) shouldEqual id.point(3)
     iso.mapping[Id].reverseGet(id.point(3)) shouldEqual id.point(IntWrapper(3))

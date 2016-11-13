@@ -1,6 +1,10 @@
 package monocle
 
-import scalaz.{Choice, Contravariant, Functor, Profunctor, \/}
+import cats.arrow.Choice
+import cats.{Functor, ContravariantCartesian}
+import cats.functor.Profunctor
+import cats.functor.Contravariant
+import catssupport.Implicits._
 
 /**
  * A [[PSetter]] is a generalisation of Functor map:
@@ -156,7 +160,7 @@ sealed abstract class SetterInstances {
     def id[A]: Setter[A, A] =
       Setter.id
 
-    def choice[A, B, C](f1: => Setter[A, C], f2: => Setter[B, C]): Setter[A \/ B, C] =
+    def choice[A, B, C](f1: Setter[A, C], f2: Setter[B, C]): Setter[A \/ B, C] =
       f1 choice f2
   }
 }

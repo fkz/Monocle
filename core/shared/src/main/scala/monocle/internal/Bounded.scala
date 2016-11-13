@@ -2,8 +2,9 @@ package monocle.internal
 
 import monocle.Prism
 
-import scalaz.syntax.order._
-import scalaz.{Maybe, Order}
+import cats.syntax.order._
+import cats.Order
+
 
 
 private[monocle] trait Bounded[T] {

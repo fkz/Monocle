@@ -65,16 +65,17 @@ object Reverse extends ReverseFunctions {
   /************************************************************************************************/
   /** Scalaz instances                                                                            */
   /************************************************************************************************/
-  import scalaz.{IList, NonEmptyList, Tree}
-
-  implicit def iListReverse[A]: Reverse[IList[A], IList[A]] =
-    reverseFromReverseFunction(_.reverse)
-
+//  import scalaz.{IList, NonEmptyList, Tree}
+   import cats.data.NonEmptyList
+//
+//  implicit def iListReverse[A]: Reverse[IList[A], IList[A]] =
+//    reverseFromReverseFunction(_.reverse)
+//
   implicit def nelReverse[A]: Reverse[NonEmptyList[A], NonEmptyList[A]] =
-    reverseFromReverseFunction(_.reverse)
-
-  implicit def treeReverse[A]: Reverse[Tree[A], Tree[A]] = new Reverse[Tree[A], Tree[A]] {
-    val reverse = Iso[Tree[A], Tree[A]](reverseTree)(reverseTree)
-    private def reverseTree(tree: Tree[A]): Tree[A] = Tree.Node(tree.rootLabel, tree.subForest.reverse.map(reverseTree))
-  }
+    reverseFromReverseFunction(l => NonEmptyList.fromListUnsafe(l.toList.reverse))
+//
+//  implicit def treeReverse[A]: Reverse[Tree[A], Tree[A]] = new Reverse[Tree[A], Tree[A]] {
+//    val reverse = Iso[Tree[A], Tree[A]](reverseTree)(reverseTree)
+//    private def reverseTree(tree: Tree[A]): Tree[A] = Tree.Node(tree.rootLabel, tree.subForest.reverse.map(reverseTree))
+//  }
 }

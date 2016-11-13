@@ -3,7 +3,7 @@ package monocle.function
 import monocle.{Iso, PTraversal, Traversal}
 
 import scala.annotation.implicitNotFound
-import scalaz.{Applicative, Traverse}
+import cats.{Applicative, Traverse}
 
 /**
  * Typeclass that defines a [[Traversal]] from a monomorphic container `S` to all of its elements of type `A`
@@ -35,10 +35,10 @@ object Each extends EachFunctions {
   /************************************************************************************************/
   /** Std instances                                                                               */
   /************************************************************************************************/
-  import scalaz.std.list._
-  import scalaz.std.map._
-  import scalaz.std.stream._
-  import scalaz.std.vector._
+  import cats.instances.list._
+  import cats.instances.map._
+  import cats.instances.stream._
+  import cats.instances.vector._
 
   implicit def listEach[A]: Each[List[A], A] = traverseEach
 
@@ -83,9 +83,9 @@ object Each extends EachFunctions {
   /************************************************************************************************/
   /** Scalaz instances                                                                            */
   /************************************************************************************************/
-  import scalaz.{==>>, Cofree, IList, Maybe, NonEmptyList, OneAnd, Tree}
+  //import scalaz.{==>>, Cofree, IList, Maybe, NonEmptyList, OneAnd, Tree}
 
-  implicit def cofreeEach[S[_]: Traverse, A]: Each[Cofree[S, A], A] = traverseEach[Cofree[S, ?], A]
+  /*implicit def cofreeEach[S[_]: Traverse, A]: Each[Cofree[S, A], A] = traverseEach[Cofree[S, ?], A]
 
   implicit def iListEach[A]: Each[IList[A], A] = traverseEach
 
@@ -93,7 +93,9 @@ object Each extends EachFunctions {
 
   implicit def maybeEach[A]: Each[Maybe[A], A] = new Each[Maybe[A], A]{
     def each = monocle.std.maybe.just.asTraversal
-  }
+  }*/
+
+  import cats.data.{NonEmptyList,OneAnd}
 
   implicit def nelEach[A]: Each[NonEmptyList[A], A] = traverseEach
 
@@ -101,9 +103,9 @@ object Each extends EachFunctions {
     new Each[OneAnd[T, A], A]{
       val each = new Traversal[OneAnd[T, A], A]{
         def modifyF[F[_]: Applicative](f: A => F[A])(s: OneAnd[T, A]): F[OneAnd[T, A]] =
-          Applicative[F].apply2(f(s.head), ev.each.modifyF(f)(s.tail))((head, tail) => new OneAnd(head, tail))
+          Applicative[F].map2(f(s.head), ev.each.modifyF(f)(s.tail))((head, tail) => new OneAnd(head, tail))
       }
     }
 
-  implicit def treeEach[A]: Each[Tree[A], A] = traverseEach
+  //implicit def treeEach[A]: Each[Tree[A], A] = traverseEach*/
 }

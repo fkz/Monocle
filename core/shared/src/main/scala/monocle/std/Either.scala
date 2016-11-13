@@ -1,7 +1,7 @@
 package monocle.std
 
 import monocle.{Prism, PPrism, Iso, PIso}
-import scalaz.{\/, -\/, \/-}
+import monocle.catssupport.Implicits._
 
 object either extends EitherOptics
 
@@ -9,8 +9,8 @@ trait EitherOptics {
   
   final def pStdLeft[A, B, C]: PPrism[Either[A, B], Either[C, B], A, C] =
     PPrism[Either[A, B], Either[C, B], A, C]{
-      case Left(a)  => \/-(a)
-      case Right(b) => -\/(Right(b))
+      case Left(a)  => \/.right(a)
+      case Right(b) => \/.left(Right(b))
     }(Left.apply)
 
   final def stdLeft[A, B]: Prism[Either[A, B], A] =
@@ -18,8 +18,8 @@ trait EitherOptics {
 
   final def pStdRight[A, B, C]: PPrism[Either[A, B], Either[A, C], B, C] =
     PPrism[Either[A, B], Either[A, C], B, C]{
-      case Left(a)  => -\/(Left(a))
-      case Right(b) => \/-(b)
+      case Left(a)  => \/.left(Left(a))
+      case Right(b) => \/.right(b)
     }(Right.apply)
 
   final def stdRight[A, B]: Prism[Either[A, B], B] =

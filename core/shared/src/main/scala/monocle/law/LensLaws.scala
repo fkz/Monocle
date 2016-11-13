@@ -3,8 +3,9 @@ package monocle.law
 import monocle.Lens
 import monocle.internal.IsEq
 
-import scalaz.Const
-import scalaz.Id._
+import cats.data.Const
+import cats.{catsInstancesForId=>id}
+import monocle.catssupport.Implicits._
 
 case class LensLaws[S, A](lens: Lens[S, A]) {
   import IsEq.syntax

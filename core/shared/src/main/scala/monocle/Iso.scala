@@ -1,9 +1,11 @@
 package monocle
 
-import scalaz.Isomorphism.{<=>, <~>}
-import scalaz.Leibniz.===
-import scalaz.Liskov.<~<
-import scalaz.{Applicative, Category, Functor, Maybe, Monoid, Split, \/}
+//import cats.Isomorphism.{<=>, <~>}
+//import scalaz.Leibniz.===
+//import scalaz.Liskov.<~<
+import cats.{Applicative, Functor, Monoid}
+import cats.arrow.{Split, Category}
+import catssupport.Implicits._
 
 /**
  * A [[PIso]] defines an isomorphism between types S, A and B, T:
@@ -333,8 +335,8 @@ object PIso extends IsoInstances {
     }
 
   /** transform a natural transformation in a [[PIso]] */
-  def fromIsoFunctor[F[_], G[_], A, B](isoFunctor: F <~> G): PIso[F[A], F[B], G[A], G[B]] =
-    PIso(isoFunctor.to.apply[A])(isoFunctor.from.apply[B])
+  //def fromIsoFunctor[F[_], G[_], A, B](isoFunctor: F <~> G): PIso[F[A], F[B], G[A], G[B]] =
+  //  PIso(isoFunctor.to.apply[A])(isoFunctor.from.apply[B])
 }
 
 object Iso {
@@ -347,8 +349,8 @@ object Iso {
     PIso.id[S, S]
 
   /** transform an Iso in a [[Iso]] */
-  def fromIsoSet[A, B](isoSet: A <=> B): Iso[A, B] =
-    Iso(isoSet.to)(isoSet.from)
+  //def fromIsoSet[A, B](isoSet: A <=> B): Iso[A, B] =
+  //  Iso(isoSet.to)(isoSet.from)
 }
 
 sealed abstract class IsoInstances extends IsoInstances0 {

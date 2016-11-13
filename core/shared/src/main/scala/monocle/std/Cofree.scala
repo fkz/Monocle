@@ -2,13 +2,13 @@ package monocle.std
 
 import monocle.{Iso, PIso}
 
-import scalaz.Tree.Node
-import scalaz.{Cofree, OneAnd, Tree}
+import cats.data.OneAnd
 
 object cofree extends CofreeOptics
 
 trait CofreeOptics {
 
+/*
   /** Polymorphic isomorphism between `Cofree[Option, _]` and `OneAnd[Stream, _]` */
   def pCofreeToStream[A, B]: PIso[Cofree[Option, A], Cofree[Option, B],
                                   OneAnd[Stream, A], OneAnd[Stream, B]] =
@@ -43,4 +43,5 @@ trait CofreeOptics {
     case head #:: tail => Cofree.delay(z, Some(fromStream(head, tail)))
     case _ => Cofree(z, None: Option[Cofree[Option, A]])
   }
+*/
 }

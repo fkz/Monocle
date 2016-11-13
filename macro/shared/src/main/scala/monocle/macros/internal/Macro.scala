@@ -76,7 +76,7 @@ private[macros] class MacroImpl(val c: blackbox.Context) {
 
     c.Expr[PLens[S, T, A, B]](q"""
       import monocle.PLens
-      import scalaz.Functor
+      import cats.Functor
 
       new PLens[$sTpe, $tTpe, $aTpe, $bTpe]{
         def get(s: $sTpe): $aTpe =

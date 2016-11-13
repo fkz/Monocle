@@ -1,6 +1,8 @@
 package monocle
 
-import scalaz.{Applicative, Choice, Functor, Monoid, Split, \/}
+import cats.{Applicative, Functor, Monoid}
+import cats.arrow.{Choice, Split}
+import catssupport.Implicits._
 
 /**
  * A [[PLens]] can be seen as a pair of functions:
@@ -255,7 +257,7 @@ object Lens {
 
 sealed abstract class LensInstances extends LensInstances0 {
   implicit val lensChoice: Choice[Lens] = new Choice[Lens] {
-    def choice[A, B, C](f: => Lens[A, C], g: => Lens[B, C]): Lens[A \/ B, C] =
+    def choice[A, B, C](f: Lens[A, C], g: Lens[B, C]): Lens[A \/ B, C] =
       f choice g
 
     def id[A]: Lens[A, A] =

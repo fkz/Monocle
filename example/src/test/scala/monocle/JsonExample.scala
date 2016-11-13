@@ -145,10 +145,10 @@ class JsonExample extends MonocleSuite {
   }
 
   implicit val jsonPlated: Plated[Json] = new Plated[Json] {
-    import scalaz.{Applicative, Traverse}
-    import scalaz.std.list._
-    import scalaz.std.map._
-    import scalaz.syntax.traverse._
+    import cats.{Applicative, Traverse}
+    import cats.instances.list._
+    import cats.instances.map._
+    import cats.syntax.traverse._
 
     val plate: Traversal[Json, Json] = new Traversal[Json, Json] {
       def modifyF[F[_]: Applicative](f: Json => F[Json])(a: Json): F[Json] =

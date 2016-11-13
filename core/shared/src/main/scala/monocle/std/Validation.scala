@@ -2,11 +2,10 @@ package monocle.std
 
 import monocle.{Prism, Iso, PIso, PPrism}
 
-import scalaz.syntax.either._
-import scalaz.syntax.validation._
-import scalaz.{Validation, \/}
+import cats.syntax.either._
+import monocle.catssupport.Implicits._
 
-object validation extends ValidationOptics
+/*object validation extends ValidationOptics
 
 trait ValidationOptics {
   final def pSuccess[E, A, B]: PPrism[Validation[E, A], Validation[E, B], A, B] =
@@ -31,3 +30,4 @@ trait ValidationOptics {
   final def validationToDisjunction[E, A]: Iso[Validation[E, A], E \/ A] =
     pValidationToDisjunction[E, E, A, A]
 }
+*/

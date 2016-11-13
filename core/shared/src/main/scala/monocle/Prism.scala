@@ -1,10 +1,11 @@
 package monocle
 
-import scalaz.Leibniz.===
-import scalaz.Liskov.<~<
-import scalaz.{Applicative, Category, Equal, Maybe, Monoid, Traverse, \/}
-import scalaz.std.option._
-import scalaz.syntax.std.option._
+//import scalaz.Leibniz.===
+//import scalaz.Liskov.<~<
+import cats.{Applicative, Monoid, Traverse}
+import cats.arrow.Category
+import catssupport.Implicits._
+import cats.instances.option._
 
 /**
  * A [[PPrism]] can be seen as a pair of functions:

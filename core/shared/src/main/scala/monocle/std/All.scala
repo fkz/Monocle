@@ -14,7 +14,7 @@ trait StdInstances
   with    ListOptics
   with    LongOptics
   with    MapOptics
-  with    MaybeOptics
+  //with    MaybeOptics
   with    OptionOptics
   with    StringOptics
   with    Tuple1Optics
@@ -22,9 +22,9 @@ trait StdInstances
   with    CofreeOptics
   with    Either3Optics
   with    DisjunctionOptics
-  with    TheseOptics
-  with    IListInstances
+  //with    TheseOptics
+  //with    IListInstances
   with    IMapOptics
   with    NonEmptyListOptics
-  with    TreeOptics
-  with    ValidationOptics
+  //with    TreeOptics
+  //with    ValidationOptics

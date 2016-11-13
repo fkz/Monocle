@@ -6,8 +6,14 @@ import monocle.refined._
 import shapeless.test.illTyped
 import eu.timepit.refined.auto._
 
-import scalaz.IMap
-import scalaz.std.string._
+import cats.instances.string._
+import cats.instances.map._
+
+object I {
+  val IMap = Map
+}
+
+import I._
 
 class AtExample extends MonocleSuite {
 

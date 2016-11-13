@@ -75,9 +75,10 @@ object Cons1 extends Cons1Functions {
   /************************************************************************************************/
   /** Scalaz instances                                                                            */
   /************************************************************************************************/
-  import scalaz.{Cofree, IList, NonEmptyList, OneAnd}
 
-  implicit def cofreeCons1[S[_], A]: Cons1[Cofree[S, A], A, S[Cofree[S, A]]] =
+  import cats.data.{NonEmptyList, OneAnd}
+
+/*  implicit def cofreeCons1[S[_], A]: Cons1[Cofree[S, A], A, S[Cofree[S, A]]] =
     new Cons1[Cofree[S, A], A, S[Cofree[S, A]]] {
 
       val cons1: Iso[Cofree[S, A], (A, S[Cofree[S, A]])]  =
@@ -88,11 +89,11 @@ object Cons1 extends Cons1Functions {
       override def head: Lens[Cofree[S, A], A] =
       Lens((c: Cofree[S, A]) => c.head)(h => c => Cofree.delay(h, c.tail))
     }
-
-  implicit def nelCons1[A]: Cons1[NonEmptyList[A], A, IList[A]] =
-    new Cons1[NonEmptyList[A],A,IList[A]]{
-      val cons1: Iso[NonEmptyList[A], (A, IList[A])] =
-        Iso((nel: NonEmptyList[A]) => (nel.head,nel.tail)){case (h,t) => NonEmptyList.nel(h, t)}
+*/
+  implicit def nelCons1[A]: Cons1[NonEmptyList[A], A, List[A]] =
+    new Cons1[NonEmptyList[A],A,List[A]]{
+      val cons1: Iso[NonEmptyList[A], (A, List[A])] =
+        Iso((nel: NonEmptyList[A]) => (nel.head,nel.tail)){case (h,t) => NonEmptyList(h, t)}
     }
 
   implicit def oneAndCons1[T[_], A]: Cons1[OneAnd[T, A], A, T[A]] = new Cons1[OneAnd[T, A], A, T[A]] {

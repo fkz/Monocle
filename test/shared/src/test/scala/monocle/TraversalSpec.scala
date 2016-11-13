@@ -5,7 +5,10 @@ import monocle.macros.GenLens
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 
-import scalaz._
+import cats.Eq
+import cats.arrow._
+import cats.instances.list._
+import catssupport.Implicits._
 
 class TraversalSpec extends MonocleSuite {
 
@@ -16,7 +19,7 @@ class TraversalSpec extends MonocleSuite {
       oldLoc.copy(latitude = newLat, longitude = newLong)
   }
 
-  def all[A]: Traversal[IList[A], A] = PTraversal.fromTraverse[IList, A, A]
+  def all[A]: Traversal[List[A], A] = PTraversal.fromTraverse[List, A, A]
 
   implicit val locationGen: Arbitrary[Location] = Arbitrary(for {
     x <- arbitrary[Int]
@@ -24,7 +27,7 @@ class TraversalSpec extends MonocleSuite {
     n <- arbitrary[String]
   } yield Location(x, y, n))
 
-  implicit val exampleEq = Equal.equalA[Location]
+  implicit val exampleEq = Eq.fromUniversalEquals[Location]
 
 
   checkAll("apply2 Traversal", TraversalTests(coordinates))
@@ -33,15 +36,15 @@ class TraversalSpec extends MonocleSuite {
   checkAll("traversal.asSetter", SetterTests(coordinates.asSetter))
 
   test("length") {
-    all[Location].length(IList(Location(1,2,""), Location(3,4,""))) shouldEqual 2
-    all[Location].length(INil[Location])                            shouldEqual 0
+    all[Location].length(List(Location(1,2,""), Location(3,4,""))) shouldEqual 2
+    all[Location].length(Nil)                            shouldEqual 0
   }
 
   // test implicit resolution of type classes
 
   test("Traversal has a Compose instance") {
     Compose[Traversal].compose(coordinates, all[Location])
-      .modify(_ + 1)(IList(Location(1,2,""), Location(3,4,""))) shouldEqual IList(Location(2,3,""), Location(4,5,""))
+      .modify(_ + 1)(List(Location(1,2,""), Location(3,4,""))) shouldEqual List(Location(2,3,""), Location(4,5,""))
   }
 
   test("Traversal has a Category instance") {
@@ -49,7 +52,7 @@ class TraversalSpec extends MonocleSuite {
   }
 
   test("Traversal has a Choice instance") {
-    Choice[Traversal].choice(all[Int], coordinates).modify(_ + 1)(-\/(IList(1,2,3))) shouldEqual -\/(IList(2,3,4))
+    Choice[Traversal].choice(all[Int], coordinates).modify(_ + 1)(\/.left(List(1,2,3))) shouldEqual \/.right(List(2,3,4))
   }
 
 
@@ -83,7 +86,7 @@ class TraversalSpec extends MonocleSuite {
     p8 <- arbitrary[Int]
   } yield ManyPropObject(p1,p2,p3,p4,p5,p6,p7,p8))
 
-  implicit val eqForManyPropObject = Equal.equalA[ManyPropObject]
+  implicit val eqForManyPropObject = Eq.fromUniversalEquals[ManyPropObject]
 
   checkAll("applyN Traversal", TraversalTests(traversalN))
 

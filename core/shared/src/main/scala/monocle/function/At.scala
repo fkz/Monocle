@@ -52,13 +52,13 @@ object At extends AtFunctions {
   /** Scalaz instances                                                                            */
   /************************************************************************************************/
 
-  import scalaz.{==>>, ISet, Order}
+  //import scalaz.{==>>, ISet, Order}
 
-  implicit def atIMap[K: Order, V]: At[K ==>> V, K, Option[V]] = new At[K ==>> V, K, Option[V]]{
-    def at(i: K) = Lens{m: ==>>[K, V] => m.lookup(i)}(optV => map => optV.fold(map - i)(v => map + (i -> v)))
-  }
+  //implicit def atIMap[K: Order, V]: At[K ==>> V, K, Option[V]] = new At[K ==>> V, K, Option[V]]{
+  //  def at(i: K) = Lens{m: ==>>[K, V] => m.lookup(i)}(optV => map => optV.fold(map - i)(v => map + (i -> v)))
+  //}
 
-  implicit def atISet[A: Order]: At[ISet[A], A, Boolean] = new At[ISet[A], A, Boolean] {
-    def at(a: A) = Lens[ISet[A], Boolean](_.member(a))(b => set => if(b) set insert a else set delete a)
-  }
+  //implicit def atISet[A: Order]: At[ISet[A], A, Boolean] = new At[ISet[A], A, Boolean] {
+  //  def at(a: A) = Lens[ISet[A], Boolean](_.member(a))(b => set => if(b) set insert a else set delete a)
+  //}
 }

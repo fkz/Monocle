@@ -1,6 +1,8 @@
 package monocle
 
-import scalaz.{Arrow, Choice, Monoid, \/}
+import cats.arrow.{Arrow, Choice}
+import cats.Monoid
+import catssupport.Implicits._
 
 /**
  * A [[Getter]] can be seen as a glorified get method between
@@ -144,12 +146,14 @@ sealed abstract class GetterInstances extends GetterInstances0 {
 
     def compose[A, B, C](f: Getter[B, C], g: Getter[A, B]): Getter[A, C] =
       g composeGetter f
+
+    override def lift[A, B](f: (A) => B): Getter[A, B] = arr(f)
   }
 }
 
 sealed abstract class GetterInstances0 {
   implicit val getterChoice: Choice[Getter] = new Choice[Getter]{
-    def choice[A, B, C](f: => Getter[A, C], g: => Getter[B, C]): Getter[A \/ B, C] =
+    def choice[A, B, C](f: Getter[A, C], g: Getter[B, C]): Getter[A \/ B, C] =
       f choice g
 
     def id[A]: Getter[A, A] =

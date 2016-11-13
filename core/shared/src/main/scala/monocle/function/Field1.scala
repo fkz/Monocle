@@ -56,9 +56,9 @@ object Field1 extends Field1Functions {
   /************************************************************************************************/
   /** Scalaz instances                                                                            */
   /************************************************************************************************/
-  import scalaz.OneAnd
+  //import scalaz.OneAnd
 
-  implicit def oneAndField1[T[_], A]: Field1[OneAnd[T, A], A] = new Field1[OneAnd[T, A], A]{
-    val first = Lens[OneAnd[T, A], A](_.head)(a => oneAnd => oneAnd.copy(head = a))
-  }
+  //implicit def oneAndField1[T[_], A]: Field1[OneAnd[T, A], A] = new Field1[OneAnd[T, A], A]{
+  //  val first = Lens[OneAnd[T, A], A](_.head)(a => oneAnd => oneAnd.copy(head = a))
+  //}
 }

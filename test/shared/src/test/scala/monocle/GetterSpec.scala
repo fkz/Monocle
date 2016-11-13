@@ -1,6 +1,9 @@
 package monocle
 
-import scalaz._
+import cats._
+import cats.functor.Profunctor
+import cats.arrow.{Compose, Choice, Category, Arrow, Split}
+import catssupport.Implicits._
 
 class GetterSpec extends MonocleSuite {
 
@@ -22,7 +25,7 @@ class GetterSpec extends MonocleSuite {
   }
 
   test("Getter has a Choice)stance") {
-    Choice[Getter].choice(_i, Choice[Getter].id[Int]).get(-\/(Bar(3))) shouldEqual 3
+    Choice[Getter].choice(_i, Choice[Getter].id[Int]).get(\/.left(Bar(3))) shouldEqual 3
   }
 
   test("Getter has a Split)stance") {
@@ -34,7 +37,7 @@ class GetterSpec extends MonocleSuite {
   }
 
   test("Getter has a Arrow instance") {
-    Arrow[Getter].arr((_: Int) * 2).get(4) shouldEqual 8
+    Arrow[Getter].lift((_: Int) * 2).get(4) shouldEqual 8
   }
 
 }

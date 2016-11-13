@@ -2,8 +2,10 @@ package monocle
 
 import monocle.law.discipline.{OptionalTests, PrismTests, SetterTests, TraversalTests}
 
-import scalaz._
-import scalaz.std.list._
+import cats._
+import cats.instances.list._
+import catssupport.Implicits._
+import cats.arrow._
 
 class PrismSpec extends MonocleSuite {
 
@@ -50,7 +52,7 @@ class PrismSpec extends MonocleSuite {
   // test implicit resolution of type classes
 
   test("Prism has a Compose instance") {
-    Compose[Prism].compose(_right[String, Int], _right[String, String \/ Int]).getOption(\/-(\/-(3))) shouldEqual Some(3)
+    Compose[Prism].compose(_right[String, Int], _right[String, String \/ Int]).getOption(\/.right(\/.right(3))) shouldEqual Some(3)
   }
 
   test("Prism has a Category instance") {

@@ -1,7 +1,8 @@
 package monocle
 
-import scalaz.{Applicative, Choice, Maybe, Monoid, \/}
-import scalaz.syntax.std.option._
+import cats.arrow.Choice
+import cats.{Applicative, Monoid}
+import catssupport.Implicits._
 
 /**
  * A [[POptional]] can be seen as a pair of functions:
@@ -257,7 +258,7 @@ object Optional {
 
 sealed abstract class OptionalInstances {
   implicit val optionalChoice: Choice[Optional] = new Choice[Optional] {
-    def choice[A, B, C](f: => Optional[A, C], g: => Optional[B, C]): Optional[A \/ B, C] =
+    def choice[A, B, C](f: Optional[A, C], g: Optional[B, C]): Optional[A \/ B, C] =
       f choice g
 
     def id[A]: Optional[A, A] =

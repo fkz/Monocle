@@ -5,7 +5,7 @@ import monocle.function.Plated._
 import monocle.law.discipline.{LensTests, TraversalTests}
 import monocle.law.discipline.function.{EachTests, ReverseTests}
 
-import scalaz.Tree
+/*import scalaz.Tree
 
 class TreeSpec extends MonocleSuite {
   checkAll("rootLabel", LensTests(rootLabel[Int]))
@@ -18,3 +18,4 @@ class TreeSpec extends MonocleSuite {
 
   checkAll("plated Tree", TraversalTests(plate[Tree[Int]]))
 }
+*/

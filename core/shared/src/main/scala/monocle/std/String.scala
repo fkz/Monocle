@@ -2,9 +2,9 @@ package monocle.std
 
 import monocle.{Iso, Prism}
 
-import scalaz.std.list._
-import scalaz.std.option._
-import scalaz.syntax.traverse._
+import cats.instances.list._
+import cats.instances.option._
+import cats.syntax.traverse._
 
 object string extends StringOptics
 
@@ -41,7 +41,7 @@ trait StringOptics {
 
   private def parseLongUnsigned(s: List[Char]): Option[Long] =
     if(s.isEmpty) None
-    else s.traverse(charToDigit).map(_.foldl(0L)(n => d => n * 10 + d))
+    else s.traverse(charToDigit).map(_.foldLeft(0L)((n, d) => n * 10 + d))
 
   private def charToDigit(c: Char): Option[Int] =
     if (c >= '0' && c <= '9') Some(c - '0')

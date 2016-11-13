@@ -21,10 +21,10 @@ trait WrappedFunctions {
 }
 
 object Wrapped extends WrappedFunctions {
-  import scalaz.{@@, Tag}
-
-  implicit def tagWrapped[A, B]: Wrapped[A @@ B, A] = new Wrapped[A @@ B, A] {
-    val wrapped: Iso[A @@ B, A] =
-      Iso(Tag.unwrap[A, B])(Tag.apply)
-  }
+//  import scalaz.{@@, Tag}
+//
+//  implicit def tagWrapped[A, B]: Wrapped[A @@ B, A] = new Wrapped[A @@ B, A] {
+//    val wrapped: Iso[A @@ B, A] =
+//      Iso(Tag.unwrap[A, B])(Tag.apply)
+//  }
 }

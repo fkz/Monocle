@@ -1,12 +1,15 @@
 package monocle.function
 
+import cats.data.State
 import monocle.{Setter, Traversal}
 
 import scala.annotation.implicitNotFound
-import scalaz.std.stream._
-import scalaz.std.anyVal._
-import scalaz.syntax.monad._
-import scalaz.{Applicative, Monad, State, Traverse}
+import cats.instances.stream._
+import cats.syntax.flatMap._
+import cats.syntax.functor._
+import cats.{Applicative, Monad, Traverse}
+import monocle.catssupport.Implicits._
+import cats.instances.int._
 
 /**
   * [[Plated]] is a type-class for types which can extract their immediate
@@ -67,8 +70,8 @@ trait PlatedFunctions {
   def transformCounting[A: Plated](f: A => Option[A])(a: A): (Int, A) = {
     transformM[A, State[Int, ?]] { b =>
       f(b).map(c => State((i: Int) => (i + 1, c)))
-        .getOrElse(State.state(b))
-    }(a).runZero
+        .getOrElse(State.pure(b))
+    }(a).runEmpty.value
 
   }
 
@@ -130,39 +133,39 @@ object Plated extends PlatedFunctions {
   /************************************************************************************************/
   /** Scalaz instances                                                                            */
   /************************************************************************************************/
-  import scalaz.{Cofree, Free, IList, ICons, INil, Tree}
-
-  implicit def cofreePlated[S[_]: Traverse, A]: Plated[Cofree[S, A]] = new Plated[Cofree[S, A]] {
-    val plate: Traversal[Cofree[S, A], Cofree[S, A]] = new Traversal[Cofree[S, A], Cofree[S, A]] {
-      def modifyF[F[_]: Applicative](f: Cofree[S, A] => F[Cofree[S, A]])(s: Cofree[S, A]): F[Cofree[S, A]] =
-        Applicative[F].map(Traverse[S].traverse(s.t.run)(f))(Cofree(s.head, _))
-    }
-  }
-
-  implicit def freePlated[S[_]: Traverse, A]: Plated[Free[S, A]] = new Plated[Free[S, A]] {
-    val plate: Traversal[Free[S, A], Free[S, A]] = new Traversal[Free[S, A], Free[S, A]] {
-      def modifyF[F[_]: Applicative](f: Free[S, A] => F[Free[S, A]])(s: Free[S, A]): F[Free[S, A]] =
-        s.resume.fold(
-          as => Applicative[F].map(Traverse[S].traverse(as)(f))(Free.roll),
-          x => Applicative[F].point(Free.point(x))
-        )
-    }
-  }
-
-  implicit def ilistPlated[A]: Plated[IList[A]] = new Plated[IList[A]] {
-    val plate: Traversal[IList[A], IList[A]] = new Traversal[IList[A], IList[A]] {
-      def modifyF[F[_]: Applicative](f: IList[A] => F[IList[A]])(s: IList[A]): F[IList[A]] =
-        s match {
-          case ICons(x, xs) => Applicative[F].map(f(xs))(x :: _)
-          case INil() => Applicative[F].point(INil())
-        }
-    }
-  }
-
-  implicit def treePlated[A]: Plated[Tree[A]] = new Plated[Tree[A]] {
-    val plate: Traversal[Tree[A], Tree[A]] = new Traversal[Tree[A], Tree[A]] {
-      def modifyF[F[_]: Applicative](f: Tree[A] => F[Tree[A]])(s: Tree[A]): F[Tree[A]] =
-        Applicative[F].map(Traverse[Stream].traverse(s.subForest)(f))(Tree.Node(s.rootLabel, _))
-    }
-  }
+//  import scalaz.{Cofree, Free, IList, ICons, INil, Tree}
+//
+//  implicit def cofreePlated[S[_]: Traverse, A]: Plated[Cofree[S, A]] = new Plated[Cofree[S, A]] {
+//    val plate: Traversal[Cofree[S, A], Cofree[S, A]] = new Traversal[Cofree[S, A], Cofree[S, A]] {
+//      def modifyF[F[_]: Applicative](f: Cofree[S, A] => F[Cofree[S, A]])(s: Cofree[S, A]): F[Cofree[S, A]] =
+//        Applicative[F].map(Traverse[S].traverse(s.t.run)(f))(Cofree(s.head, _))
+//    }
+//  }
+//
+//  implicit def freePlated[S[_]: Traverse, A]: Plated[Free[S, A]] = new Plated[Free[S, A]] {
+//    val plate: Traversal[Free[S, A], Free[S, A]] = new Traversal[Free[S, A], Free[S, A]] {
+//      def modifyF[F[_]: Applicative](f: Free[S, A] => F[Free[S, A]])(s: Free[S, A]): F[Free[S, A]] =
+//        s.resume.fold(
+//          as => Applicative[F].map(Traverse[S].traverse(as)(f))(Free.roll),
+//          x => Applicative[F].point(Free.point(x))
+//        )
+//    }
+//  }
+//
+//  implicit def ilistPlated[A]: Plated[IList[A]] = new Plated[IList[A]] {
+//    val plate: Traversal[IList[A], IList[A]] = new Traversal[IList[A], IList[A]] {
+//      def modifyF[F[_]: Applicative](f: IList[A] => F[IList[A]])(s: IList[A]): F[IList[A]] =
+//        s match {
+//          case ICons(x, xs) => Applicative[F].map(f(xs))(x :: _)
+//          case INil() => Applicative[F].point(INil())
+//        }
+//    }
+//  }
+//
+//  implicit def treePlated[A]: Plated[Tree[A]] = new Plated[Tree[A]] {
+//    val plate: Traversal[Tree[A], Tree[A]] = new Traversal[Tree[A], Tree[A]] {
+//      def modifyF[F[_]: Applicative](f: Tree[A] => F[Tree[A]])(s: Tree[A]): F[Tree[A]] =
+//        Applicative[F].map(Traverse[Stream].traverse(s.subForest)(f))(Tree.Node(s.rootLabel, _))
+//    }
+//  }
 }

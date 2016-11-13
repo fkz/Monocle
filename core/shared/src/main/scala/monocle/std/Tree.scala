@@ -3,7 +3,7 @@ package monocle.std
 import monocle.Lens
 import monocle.function.all._
 
-import scala.annotation.tailrec
+/*import scala.annotation.tailrec
 import scala.collection.immutable.Stream.Empty
 import scalaz.Tree
 import scalaz.Tree.{Leaf, Node}
@@ -49,3 +49,4 @@ trait TreeOptics {
   }
 
 }
+*/

@@ -2,7 +2,7 @@ package monocle.std
 
 import monocle.Prism
 
-import scalaz.\&/.{Both, That, This}
+/*import scalaz.\&/.{Both, That, This}
 import scalaz.syntax.either._
 import scalaz.{-\/, \&/, \/, \/-}
 
@@ -21,4 +21,4 @@ trait TheseOptics {
   @deprecated("use theseToDisjunction", since = "1.2.0")
   def theseDisjunction[A, B]: Prism[A \&/ B, A \/ B] =
     theseToDisjunction[A, B]
-}
+}*/

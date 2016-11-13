@@ -3,8 +3,10 @@ package monocle.law
 import monocle.Iso
 import monocle.internal.IsEq
 
-import scalaz.Const
-import scalaz.Id._
+import cats.{catsInstancesForId=>id}
+import monocle.catssupport.Implicits._
+import cats.data.Const
+import cats.syntax.functor._
 
 case class IsoLaws[S, A](iso: Iso[S, A]) {
 
@@ -30,5 +32,4 @@ case class IsoLaws[S, A](iso: Iso[S, A]) {
 
   def consistentGetModifyId(s: S): IsEq[A] =
     iso.get(s) <==> iso.modifyF[Const[A, ?]](Const(_))(s).getConst
-
 }

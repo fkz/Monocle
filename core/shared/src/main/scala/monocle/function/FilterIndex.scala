@@ -3,8 +3,9 @@ package monocle.function
 import monocle.{Iso, Traversal}
 
 import scala.annotation.implicitNotFound
-import scalaz.syntax.traverse._
-import scalaz.{Applicative, Traverse}
+import cats.syntax.traverse._
+import cats.{Applicative, Traverse}
+import monocle.catssupport.Implicits._
 
 /**
  * Typeclass that defines a [[Traversal]] from an `S` to all its elements `A` whose index `I` in `S` satisfies the predicate
@@ -39,19 +40,20 @@ object FilterIndex extends FilterIndexFunctions {
   /************************************************************************************************/
   /** Std instances                                                                               */
   /************************************************************************************************/
-  import scalaz.std.list._
-  import scalaz.std.stream._
-  import scalaz.std.vector._
+  import cats.instances.list._
+  import cats.instances.stream._
+  import cats.instances.vector._
 
   implicit def listFilterIndex[A]: FilterIndex[List[A], Int, A] =
     traverseFilterIndex(_.zipWithIndex)
 
   implicit def mapFilterIndex[K, V]: FilterIndex[Map[K,V], K, V] = new FilterIndex[Map[K, V], K, V] {
-    import scalaz.syntax.applicative._
+    import cats.syntax.applicative._
+    import cats.syntax.functor._
     def filterIndex(predicate: K => Boolean) = new Traversal[Map[K, V], V] {
       def modifyF[F[_]: Applicative](f: V => F[V])(s: Map[K, V]): F[Map[K, V]] =
         s.toList.traverse{ case (k, v) =>
-          (if(predicate(k)) f(v) else v.point[F]).strengthL(k)
+          (if(predicate(k)) f(v) else Applicative[F].point(v)).map((k, _))
         }.map(_.toMap)
     }
   }
@@ -70,6 +72,7 @@ object FilterIndex extends FilterIndexFunctions {
   /************************************************************************************************/
   /** Scalaz instances                                                                            */
   /************************************************************************************************/
+/*
   import scalaz.{==>>, IList, NonEmptyList, Order}
 
   implicit def iListFilterIndex[A]: FilterIndex[IList[A], Int, A] =
@@ -83,8 +86,11 @@ object FilterIndex extends FilterIndexFunctions {
           (if(predicate(k)) f(v) else v.point[F]).strengthL(k)
         }.map(==>>.fromList(_))
     }
-  }
+  }*/
+
+import cats.data.NonEmptyList
 
   implicit def nelFilterIndex[A]: FilterIndex[NonEmptyList[A], Int, A] =
-    traverseFilterIndex(_.zipWithIndex)
+    traverseFilterIndex(l => NonEmptyList.fromListUnsafe(l.toList.zipWithIndex))
+
 }
