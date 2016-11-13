@@ -193,6 +193,7 @@ lazy val bench = project.dependsOn(coreJVM, genericJVM, macrosJVM)
   .settings(monocleJvmSettings)
   .settings(noPublishSettings)
   .settings(libraryDependencies ++= Seq(
+    "org.typelevel"   %%% "cats"        % "0.8.1",
     shapeless.value,
     compilerPlugin(paradisePlugin)
   )).enablePlugins(JmhPlugin)
