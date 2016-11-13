@@ -160,7 +160,12 @@ sealed abstract class SetterInstances {
     def id[A]: Setter[A, A] =
       Setter.id
 
+    @OnlyInCats
     def choice[A, B, C](f1: Setter[A, C], f2: Setter[B, C]): Setter[A \/ B, C] =
+      f1 choice f2
+
+    @OnlyInScalaz
+    def choice[A, B, C](f1: => Setter[A, C], f2: => Setter[B, C]): Setter[A \/ B, C] =
       f1 choice f2
   }
 }

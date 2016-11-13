@@ -173,7 +173,12 @@ object Fold extends FoldInstances {
 
 sealed abstract class FoldInstances {
   implicit val foldChoice: Choice[Fold] = new Choice[Fold]{
+    @OnlyInCats
     def choice[A, B, C](f: Fold[A, C], g: Fold[B, C]): Fold[A \/ B, C] =
+      f choice g
+
+    @OnlyInScalaz
+    def choice[A, B, C](f: => Fold[A, C], g: => Fold[B, C]): Fold[A \/ B, C] =
       f choice g
 
     def id[A]: Fold[A, A] =

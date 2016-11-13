@@ -257,6 +257,11 @@ object Lens {
 
 sealed abstract class LensInstances extends LensInstances0 {
   implicit val lensChoice: Choice[Lens] = new Choice[Lens] {
+    @OnlyInScalaz
+    def choice[A, B, C](f: => Lens[A, C], g: => Lens[B, C]): Lens[A \/ B, C] =
+      f choice g
+
+    @OnlyInCats
     def choice[A, B, C](f: Lens[A, C], g: Lens[B, C]): Lens[A \/ B, C] =
       f choice g
 

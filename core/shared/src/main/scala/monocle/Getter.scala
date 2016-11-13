@@ -147,13 +147,19 @@ sealed abstract class GetterInstances extends GetterInstances0 {
     def compose[A, B, C](f: Getter[B, C], g: Getter[A, B]): Getter[A, C] =
       g composeGetter f
 
+    @OnlyInCats
     override def lift[A, B](f: (A) => B): Getter[A, B] = arr(f)
   }
 }
 
 sealed abstract class GetterInstances0 {
   implicit val getterChoice: Choice[Getter] = new Choice[Getter]{
+    @OnlyInCats
     def choice[A, B, C](f: Getter[A, C], g: Getter[B, C]): Getter[A \/ B, C] =
+      f choice g
+
+    @OnlyInScalaz
+    def choice[A, B, C](f: => Getter[A, C], g: => Getter[B, C]): Getter[A \/ B, C] =
       f choice g
 
     def id[A]: Getter[A, A] =

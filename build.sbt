@@ -111,6 +111,7 @@ lazy val monocleJS = project.in(file(".monocleJS"))
 lazy val coreJVM = core.jvm
 lazy val coreJS  = core.js
 lazy val core    = crossProject
+  .dependsOn(monadmacro)
   .settings(moduleName := "monocle-core")
   .configureCross(monocleCrossSettings)
   .jvmSettings(mimaSettings("core"): _*)
@@ -161,6 +162,25 @@ lazy val macros    = crossProject.dependsOn(core)
         case (2, scalaMajor) if scalaMajor < 11 => Seq("org.scalamacros" %% "quasiquotes" % macroVersion)
       } getOrElse Nil,
     unmanagedSourceDirectories in Compile += (sourceDirectory in Compile).value / s"scala-${scalaBinaryVersion.value}"
+  )
+
+lazy val monadmacroJS = monadmacro.js
+lazy val monadmacroJVM = monadmacro.jvm
+lazy val monadmacro = crossProject
+  .in(file("monadmacro"))
+  .settings(moduleName := "monocle-monadmacro")
+  .configureCross(monocleCrossSettings)
+  .settings(
+    scalacOptions += "-language:experimental.macros",
+    libraryDependencies ++= Seq(
+      "org.scala-lang" % "scala-reflect"  % scalaVersion.value,
+      "org.scala-lang" % "scala-compiler" % scalaVersion.value % "provided",
+      macroCompat.value
+    ),
+    addCompilerPlugin(paradisePlugin),
+    libraryDependencies ++= CrossVersion partialVersion scalaVersion.value collect {
+      case (2, scalaMajor) if scalaMajor < 11 => Seq("org.scalamacros" %% "quasiquotes" % macroVersion)
+    } getOrElse Nil
   )
 
 lazy val stateJVM = state.jvm

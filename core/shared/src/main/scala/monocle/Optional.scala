@@ -258,6 +258,11 @@ object Optional {
 
 sealed abstract class OptionalInstances {
   implicit val optionalChoice: Choice[Optional] = new Choice[Optional] {
+    @OnlyInScalaz
+    def choice[A, B, C](f: => Optional[A, C], g: => Optional[B, C]): Optional[A \/ B, C] =
+      f choice g
+
+    @OnlyInCats
     def choice[A, B, C](f: Optional[A, C], g: Optional[B, C]): Optional[A \/ B, C] =
       f choice g
 
