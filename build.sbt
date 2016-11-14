@@ -98,10 +98,10 @@ lazy val monocleJVM = project.in(file(".monocleJVM"))
   .settings(monocleJvmSettings)
   .aggregate(
     coreJVM, genericJVM, lawJVM, macrosJVM, stateJVM, refinedJVM, unsafeJVM, testJVM,
-    example, docs, bench)
+    /*example,*/ docs, /*bench*/)
   .dependsOn(
-    coreJVM, genericJVM, lawJVM, macrosJVM, stateJVM, refinedJVM, unsafeJVM, testJVM % "test-internal -> test",
-    bench % "compile-internal;test-internal -> test")
+    coreJVM, genericJVM, lawJVM, macrosJVM, stateJVM, refinedJVM, unsafeJVM, testJVM % "test-internal -> test"/*,
+    bench % "compile-internal;test-internal -> test"*/)
 
 lazy val monocleJS = project.in(file(".monocleJS"))
   .settings(monocleJsSettings)
@@ -115,7 +115,7 @@ lazy val core    = crossProject
   .settings(moduleName := "monocle-core")
   .configureCross(monocleCrossSettings)
   .jvmSettings(mimaSettings("core"): _*)
-  .settings(libraryDependencies += scalaz.value)
+  .settings(libraryDependencies ++= Seq(scalaz.value, compilerPlugin(paradisePlugin)))
   .jvmSettings(
     libraryDependencies ++= PartialFunction.condOpt(CrossVersion.partialVersion(scalaVersion.value)) {
       case Some((2, 11)) => "org.scala-lang.modules" %% "scala-java8-compat" % "0.7.0"
