@@ -52,7 +52,7 @@ class TraversalSpec extends MonocleSuite {
   }
 
   test("Traversal has a Choice instance") {
-    Choice[Traversal].choice(all[Int], coordinates).modify(_ + 1)(\/.left(List(1,2,3))) shouldEqual \/.right(List(2,3,4))
+    Choice[Traversal].choice(all[Int], coordinates).modify(_ + 1)(\/.left(List(1,2,3))) shouldEqual \/.left(List(2,3,4))
   }
 
 
