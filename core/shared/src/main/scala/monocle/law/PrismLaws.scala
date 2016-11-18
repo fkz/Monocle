@@ -2,11 +2,11 @@ package monocle.law
 
 import monocle.Prism
 import monocle.internal.IsEq
-
-import cats.{catsInstancesForId=>id}
+import cats.{catsInstancesForId => id}
 import cats.instances.option._
 import cats.syntax.option._
 import cats.data.Const
+import monocle.catssupport._
 import monocle.catssupport.Implicits._
 
 case class PrismLaws[S, A](prism: Prism[S, A]) {
@@ -30,6 +30,6 @@ case class PrismLaws[S, A](prism: Prism[S, A]) {
   def consistentModifyModifyId(s: S, f: A => A): IsEq[S] =
     prism.modify(f)(s) <==> prism.modifyF(a => id.point(f(a)))(s)
 
-  //def consistentGetOptionModifyId(s: S): IsEq[Option[A]] =
-  //  prism.getOption(s) <==> prism.modifyF[Const[Option[A] @@ First, ?]](a => Const(Some(a).first))(s).getConst.unwrap
+  def consistentGetOptionModifyId(s: S): IsEq[Option[A]] =
+    prism.getOption(s) <==> prism.modifyF[Const[First[Option[A]], ?]](a => Const(Some(a).first))(s).getConst.unwrap
 }
