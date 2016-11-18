@@ -31,5 +31,5 @@ case class PrismLaws[S, A](prism: Prism[S, A]) {
     prism.modify(f)(s) <==> prism.modifyF(a => id.point(f(a)))(s)
 
   def consistentGetOptionModifyId(s: S): IsEq[Option[A]] =
-    prism.getOption(s) <==> prism.modifyF[Const[First[Option[A]], ?]](a => Const(Some(a).first))(s).getConst.unwrap
+    prism.getOption(s) <==> prism.modifyF[Const[First[A], ?]](a => Const(Some(a).first))(s).getConst.unwrap
 }
