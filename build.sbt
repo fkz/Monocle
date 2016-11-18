@@ -98,7 +98,7 @@ lazy val monocleJVM = project.in(file(".monocleJVM"))
   .settings(monocleJvmSettings)
   .aggregate(
     coreJVM, genericJVM, lawJVM, macrosJVM, stateJVM, refinedJVM, unsafeJVM, testJVM,
-    /*example,*/ docs, /*bench*/)
+    /*example,*/ docs/*, bench*/)
   .dependsOn(
     coreJVM, genericJVM, lawJVM, macrosJVM, stateJVM, refinedJVM, unsafeJVM, testJVM % "test-internal -> test"/*,
     bench % "compile-internal;test-internal -> test"*/)
