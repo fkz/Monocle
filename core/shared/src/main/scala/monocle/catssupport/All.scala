@@ -1,5 +1,6 @@
 package monocle.catssupport
 
+import cats.data.{NonEmptyList, State}
 import cats.functor.Profunctor
 import cats.kernel.Semigroup
 import cats.{Applicative, Eq, Functor, Monoid, Unapply}
@@ -48,6 +49,8 @@ object Implicits {
 
   implicit class OptionExtensions[A](val o: Option[A]) extends AnyVal {
     def first: First[A] = new First(o)
+    def toOption: Option[A] = o
+    def toMaybe: Option[A] = o
   }
 
   type \/[+A, +B] = Either[A, B]
@@ -122,12 +125,6 @@ object Implicits {
     def apply3[A, B, C, D](a: F[A], b: F[B], c: F[C])(f: (A, B, C) => D): F[D] = m.map3(a, b, c)(f)
   }
 
-  type Equal[A] = Eq[A]
-
-  implicit class EqualExt[A](val e: Eq[A]) extends AnyVal {
-    def equal(a: A, b: A): Boolean = e.eqv(a, b)
-  }
-
   implicit class ProfunctorExt[F[_, _]](val p: Profunctor[F]) extends AnyVal {
     def mapfst[A, B, C](fab: F[A, B])(f: C => A): F[C, B] =
       p.lmap(fab)(f)
@@ -173,4 +170,67 @@ object Implicits {
       }
     )
   }
+
+  type Equal[A] = Eq[A]
+
+  implicit class EqualCompanionObjectExtensions(val eq: Eq.type) extends AnyVal {
+    def equalA[A]: Eq[A] = Eq.fromUniversalEquals[A]
+    def equal[A](f: (A, A) => Boolean): Eq[A] = Eq.instance(f)
+  }
+
+  implicit class EqualExtensions[A](val eq: Eq[A]) extends AnyVal {
+    def contramap[B](fun: B => A): Eq[B] = eq.on(fun)
+    def equal(a: A, b: A): Boolean = eq.eqv(a, b)
+  }
+
+  implicit class NonEmptyListCompanionObjectExtensions(val e: NonEmptyList.type) extends AnyVal {
+    def nel[A](head: A, tail: List[A]): NonEmptyList[A] = {
+      NonEmptyList(head, tail)
+    }
+  }
+
+  implicit class NonEmptyListExtensions[A](val nel: NonEmptyList[A]) extends AnyVal {
+    def zipWithIndex: NonEmptyList[(A, Int)] = NonEmptyList.fromListUnsafe(nel.toList.zipWithIndex)
+    def reverse: NonEmptyList[A] = NonEmptyList.fromListUnsafe(nel.toList.reverse)
+    def init: List[A] = nel.toList.init
+    def last: A = nel.toList.last
+    def list: List[A] = nel.toList
+  }
+
+  implicit class StateCompanionObjectExtensions(val s: State.type) extends AnyVal {
+    def state[S, A](a: A): State[S, A] = s.pure(a)
+  }
+
+  implicit class StateExtensions[S, A](val s: State[S, A]) extends AnyVal {
+    def runZero(implicit z: Monoid[S]): (S, A) = s.runEmpty.value
+  }
+
+  type IList[A] = List[A]
+  type Maybe[A] = Option[A]
+  val Just = Some
+  def Nothing[A] = None
+  type ISet[A] = Set[A]
+
+  object Maybe {
+    def empty[A]: Option[A] = None
+  }
+
+  object IList {
+    def fromList[A](x: List[A]): List[A] = x
+    def empty[A](): List[A] = Nil
+  }
+
+  object INil {
+    def unapply[A](a: Nil.type): Boolean = true
+  }
+
+  object ICons {
+    def unapply[A](a: ::[A]): Option[(A, List[A])] = ::.unapply(a)
+  }
+
+  implicit class ListExtensions[A](val list: List[A]) extends AnyVal {
+    def foldl[B](init: B)(f: B => A => B): B = list.foldLeft(init)((b, a) => f(b)(a))
+  }
+
+  type ==>>[A, B] = Map[A, B]
 }

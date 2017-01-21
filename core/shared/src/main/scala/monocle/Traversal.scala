@@ -273,7 +273,12 @@ sealed abstract class TraversalInstances {
     def id[A]: Traversal[A, A] =
       Traversal.id
 
+    @OnlyInCats
     def choice[A, B, C](f1: Traversal[A, C], f2: Traversal[B, C]): Traversal[A \/ B, C] =
+      f1 choice f2
+
+    @OnlyInScalaz
+    def choice[A, B, C](f1: => Traversal[A, C], f2: => Traversal[B, C]): Traversal[A \/ B, C] =
       f1 choice f2
   }
 }

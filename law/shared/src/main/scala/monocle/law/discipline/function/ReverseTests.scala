@@ -6,14 +6,14 @@ import monocle.law.discipline.IsoTests
 import org.scalacheck.{Arbitrary, Prop}
 import org.typelevel.discipline.Laws
 
-import cats.Eq
+import monocle.catssupport.Implicits._
 
 object ReverseTests extends Laws {
 
-  def apply[S: Eq : Arbitrary](implicit evReverse: Reverse[S, S], arbSS: Arbitrary[S => S]): RuleSet =
+  def apply[S: Equal : Arbitrary](implicit evReverse: Reverse[S, S], arbSS: Arbitrary[S => S]): RuleSet =
     apply[S, S]
 
-  def apply[S: Eq : Arbitrary, A: Eq : Arbitrary](implicit evReverse: Reverse[S, A],
+  def apply[S: Equal : Arbitrary, A: Equal : Arbitrary](implicit evReverse: Reverse[S, A],
                                                         arbAA: Arbitrary[A => A]): RuleSet = new RuleSet {
     override def name: String = "Reverse"
     override def bases: Seq[(String, RuleSet)] = Nil

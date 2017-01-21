@@ -1,6 +1,6 @@
 package monocle.law
 
-import monocle.Optional
+import monocle.{OnlyInCats, OnlyInScalaz, Optional}
 import monocle.internal.IsEq
 import cats.{catsInstancesForId => id}
 import cats.instances.option._
@@ -33,6 +33,11 @@ case class OptionalLaws[S, A](optional: Optional[S, A]) {
   def consistentModifyModifyId(s: S, f: A => A): IsEq[S] =
     optional.modify(f)(s) <==> optional.modifyF(a => id.point(f(a)))(s)
 
+  @OnlyInCats
   def consistentGetOptionModifyId(s: S): IsEq[Option[A]] =
     optional.getOption(s) <==> optional.modifyF[Const[First[A], ?]](a => Const(Some(a).first))(s).getConst.unwrap
+
+  @OnlyInScalaz
+  def consistentGetOptionModifyId(s: S): IsEq[Option[A]] =
+    optional.getOption(s) <==> optional.modifyF[Const[Option[A] @@ First, ?]](a => Const(Some(a).first))(s).getConst.unwrap
 }

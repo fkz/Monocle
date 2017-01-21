@@ -1,8 +1,9 @@
 package monocle.function
 
-import monocle.Iso
+import monocle.{Iso, OnlyInScalaz}
 
 import scala.annotation.implicitNotFound
+import monocle.catssupport.Implicits._
 
 @implicitNotFound("Could not find an instance of Reverse[${S},${A}], please check Monocle instance location policy to " +
   "find out which import is necessary")
@@ -67,15 +68,17 @@ object Reverse extends ReverseFunctions {
   /************************************************************************************************/
 //  import scalaz.{IList, NonEmptyList, Tree}
    import cats.data.NonEmptyList
-//
-//  implicit def iListReverse[A]: Reverse[IList[A], IList[A]] =
-//    reverseFromReverseFunction(_.reverse)
-//
+
+  @OnlyInScalaz
+  implicit def iListReverse[A]: Reverse[IList[A], IList[A]] =
+    reverseFromReverseFunction(_.reverse)
+
   implicit def nelReverse[A]: Reverse[NonEmptyList[A], NonEmptyList[A]] =
     reverseFromReverseFunction(l => NonEmptyList.fromListUnsafe(l.toList.reverse))
-//
-//  implicit def treeReverse[A]: Reverse[Tree[A], Tree[A]] = new Reverse[Tree[A], Tree[A]] {
-//    val reverse = Iso[Tree[A], Tree[A]](reverseTree)(reverseTree)
-//    private def reverseTree(tree: Tree[A]): Tree[A] = Tree.Node(tree.rootLabel, tree.subForest.reverse.map(reverseTree))
-//  }
+
+  @OnlyInScalaz
+  implicit def treeReverse[A]: Reverse[Tree[A], Tree[A]] = new Reverse[Tree[A], Tree[A]] {
+    val reverse = Iso[Tree[A], Tree[A]](reverseTree)(reverseTree)
+    private def reverseTree(tree: Tree[A]): Tree[A] = Tree.Node(tree.rootLabel, tree.subForest.reverse.map(reverseTree))
+  }
 }

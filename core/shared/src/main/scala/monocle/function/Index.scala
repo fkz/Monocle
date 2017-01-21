@@ -1,6 +1,6 @@
 package monocle.function
 
-import monocle.{Iso, Optional}
+import monocle.{Iso, OnlyInScalaz, Optional}
 
 import scala.annotation.implicitNotFound
 import scala.util.Try
@@ -75,17 +75,19 @@ object Index extends IndexFunctions{
   import monocle.function.Cons1.{oneAndCons1, nelCons1}
 //  import scalaz.{==>>, IList, Order, NonEmptyList, OneAnd}
 //
-//  implicit def iListIndex[A]: Index[List[A], Int, A] = new Index[List[A], Int, A] {
-//    def index(i: Int) = Optional[List[A], A](
-//      il      => if(i < 0) None else il.drop(i).headOption)(
-//      a => il => il.zipWithIndex.traverse[Id, A]{
-//        case (_    , index) if index == i => a
-//        case (value, index)               => value
-//      }
-//    )
-//  }
-//
-//  implicit def iMapIndex[K: Order, V]: Index[K ==>> V, K, V] = atIndex
+  @OnlyInScalaz
+  implicit def iListIndex[A]: Index[List[A], Int, A] = new Index[List[A], Int, A] {
+    def index(i: Int) = Optional[List[A], A](
+      il      => if(i < 0) None else il.drop(i).headOption)(
+      a => il => il.zipWithIndex.traverse[Id, A]{
+        case (_    , index) if index == i => a
+        case (value, index)               => value
+      }
+    )
+  }
+
+  @OnlyInScalaz
+  implicit def iMapIndex[K: Order, V]: Index[K ==>> V, K, V] = atIndex
 //
   import cats.data.{NonEmptyList, OneAnd}
 

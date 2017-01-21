@@ -1,23 +1,26 @@
 package monocle.std
 
-import monocle.Lens
+import monocle.{Lens, OnlyInScalaz}
 import monocle.function.all._
 
-/*import scala.annotation.tailrec
+import scala.annotation.tailrec
 import scala.collection.immutable.Stream.Empty
-import scalaz.Tree
-import scalaz.Tree.{Leaf, Node}
+//import scalaz.Tree
+//import scalaz.Tree.{Leaf, Node}
 
 object tree extends TreeOptics
 
 trait TreeOptics {
 
+  @OnlyInScalaz
   final def rootLabel[A]: Lens[Tree[A], A] =
     Lens[Tree[A], A](_.rootLabel)(l => tree => Node(l, tree.subForest))
 
+  @OnlyInScalaz
   final def subForest[A]: Lens[Tree[A], Stream[Tree[A]]] =
     Lens[Tree[A], Stream[Tree[A]]](_.subForest)(children => tree => Node(tree.rootLabel, children))
 
+  @OnlyInScalaz
   final def leftMostLabel[A]: Lens[Tree[A], A] = {
     @tailrec
     def _get(tree: Tree[A]): A = tree.subForest match {
@@ -33,6 +36,7 @@ trait TreeOptics {
     Lens(_get)(_set)
   }
 
+  @OnlyInScalaz
   final def rightMostLabel[A]: Lens[Tree[A], A] = {
     @tailrec
     def _get(tree: Tree[A]): A = tree.subForest match {
@@ -49,4 +53,3 @@ trait TreeOptics {
   }
 
 }
-*/

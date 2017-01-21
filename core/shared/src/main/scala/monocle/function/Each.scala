@@ -1,9 +1,10 @@
 package monocle.function
 
-import monocle.{Iso, PTraversal, Traversal}
+import monocle.{Iso, OnlyInScalaz, PTraversal, Traversal}
 
 import scala.annotation.implicitNotFound
 import cats.{Applicative, Traverse}
+import monocle.catssupport.Implicits._
 
 /**
  * Typeclass that defines a [[Traversal]] from a monomorphic container `S` to all of its elements of type `A`
@@ -85,15 +86,19 @@ object Each extends EachFunctions {
   /************************************************************************************************/
   //import scalaz.{==>>, Cofree, IList, Maybe, NonEmptyList, OneAnd, Tree}
 
-  /*implicit def cofreeEach[S[_]: Traverse, A]: Each[Cofree[S, A], A] = traverseEach[Cofree[S, ?], A]
+  @OnlyInScalaz
+  implicit def cofreeEach[S[_]: Traverse, A]: Each[Cofree[S, A], A] = traverseEach[Cofree[S, ?], A]
 
+  @OnlyInScalaz
   implicit def iListEach[A]: Each[IList[A], A] = traverseEach
 
+  @OnlyInScalaz
   implicit def iMapEach[K, V]: Each[K ==>> V, V] = traverseEach[K ==>> ?, V]
 
+  @OnlyInScalaz
   implicit def maybeEach[A]: Each[Maybe[A], A] = new Each[Maybe[A], A]{
     def each = monocle.std.maybe.just.asTraversal
-  }*/
+  }
 
   import cats.data.{NonEmptyList,OneAnd}
 
@@ -103,9 +108,10 @@ object Each extends EachFunctions {
     new Each[OneAnd[T, A], A]{
       val each = new Traversal[OneAnd[T, A], A]{
         def modifyF[F[_]: Applicative](f: A => F[A])(s: OneAnd[T, A]): F[OneAnd[T, A]] =
-          Applicative[F].map2(f(s.head), ev.each.modifyF(f)(s.tail))((head, tail) => new OneAnd(head, tail))
+          Applicative[F].apply2(f(s.head), ev.each.modifyF(f)(s.tail))((head, tail) => new OneAnd(head, tail))
       }
     }
 
-  //implicit def treeEach[A]: Each[Tree[A], A] = traverseEach*/
+  @OnlyInScalaz
+  implicit def treeEach[A]: Each[Tree[A], A] = traverseEach*/
 }

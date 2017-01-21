@@ -1,1 +1,1 @@
-version in ThisBuild := "1.4.0-SNAPSHOT"
+version in ThisBuild := s"1.4.0-${typeclassLibrary.value}.SNAPSHOT"

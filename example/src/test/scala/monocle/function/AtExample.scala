@@ -8,12 +8,7 @@ import eu.timepit.refined.auto._
 
 import cats.instances.string._
 import cats.instances.map._
-
-object I {
-  val IMap = Map
-}
-
-import I._
+import monocle.catssupport.Implicits._
 
 class AtExample extends MonocleSuite {
 

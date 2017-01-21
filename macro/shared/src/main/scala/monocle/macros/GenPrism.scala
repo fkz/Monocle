@@ -19,11 +19,12 @@ private class GenPrismImpl(val c: blackbox.Context) {
     val sTpeSym = sTpe.typeSymbol.companion
     c.Expr[Prism[S, A]](q"""
       import monocle.Prism
-
+      import monocle.catssupport.Implicits.\/
+                           |
       new Prism[$sTpe, $aTpe]{
-        def getOrModify(s: $sTpe): Either[$sTpe, $aTpe] =
-          if(s.isInstanceOf[$aTpe]) Right(s.asInstanceOf[$aTpe])
-          else Left(s)
+        def getOrModify(s: $sTpe): $sTpe \/ $aTpe =
+          if(s.isInstanceOf[$aTpe]) \/.right(s.asInstanceOf[$aTpe])
+          else \/.left(s)
 
         def reverseGet(a: $aTpe): $sTpe =
           a.asInstanceOf[$sTpe]

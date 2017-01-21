@@ -1,6 +1,6 @@
 package monocle.function
 
-import monocle.{Iso, Traversal}
+import monocle.{Iso, OnlyInScalaz, Traversal}
 
 import scala.annotation.implicitNotFound
 import cats.syntax.traverse._
@@ -72,12 +72,14 @@ object FilterIndex extends FilterIndexFunctions {
   /************************************************************************************************/
   /** Scalaz instances                                                                            */
   /************************************************************************************************/
-/*
-  import scalaz.{==>>, IList, NonEmptyList, Order}
 
+  //import scalaz.{==>>, IList, NonEmptyList, Order}
+
+  @OnlyInScalaz
   implicit def iListFilterIndex[A]: FilterIndex[IList[A], Int, A] =
     traverseFilterIndex(_.zipWithIndex)
 
+  @OnlyInScalaz
   implicit def iMapFilterIndex[K: Order, V]: FilterIndex[K ==>> V, K, V] = new FilterIndex[K ==>> V, K, V] {
     import scalaz.syntax.applicative._
     def filterIndex(predicate: K => Boolean) = new Traversal[K ==>> V, V] {
@@ -86,11 +88,11 @@ object FilterIndex extends FilterIndexFunctions {
           (if(predicate(k)) f(v) else v.point[F]).strengthL(k)
         }.map(==>>.fromList(_))
     }
-  }*/
+  }
 
 import cats.data.NonEmptyList
 
   implicit def nelFilterIndex[A]: FilterIndex[NonEmptyList[A], Int, A] =
-    traverseFilterIndex(l => NonEmptyList.fromListUnsafe(l.toList.zipWithIndex))
+    traverseFilterIndex(_.zipWithIndex)
 
 }

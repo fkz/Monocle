@@ -4,6 +4,9 @@ import monocle.function.fields._
 import monocle.std.tuple2._
 import monocle.{Iso, Optional, Prism}
 
+import monocle.OnlyInScalaz
+import monocle.catssupport.Implicits._
+
 import scala.annotation.implicitNotFound
 //import scalaz.{ICons, INil}
 
@@ -82,10 +85,11 @@ object Cons extends ConsFunctions {
 
   //import scalaz.IList
 
-  //implicit def iListCons[A]: Cons[IList[A], A] = new Cons[IList[A], A]{
-  //  val cons = Prism[IList[A], (A, IList[A])]{
-  //    case INil()       => None
-  //    case ICons(x, xs) => Some((x, xs))
-  //  }{ case (a, s) => ICons(a, s) }
-  //}
+  @OnlyInScalaz
+  implicit def iListCons[A]: Cons[IList[A], A] = new Cons[IList[A], A]{
+    val cons = Prism[IList[A], (A, IList[A])]{
+      case INil()       => None
+      case ICons(x, xs) => Some((x, xs))
+    }{ case (a, s) => ICons(a, s) }
+  }
 }

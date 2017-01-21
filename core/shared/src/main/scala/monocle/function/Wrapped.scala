@@ -1,6 +1,6 @@
 package monocle.function
 
-import monocle.Iso
+import monocle.{Iso, OnlyInScalaz}
 
 import scala.annotation.implicitNotFound
 
@@ -22,9 +22,10 @@ trait WrappedFunctions {
 
 object Wrapped extends WrappedFunctions {
 //  import scalaz.{@@, Tag}
-//
-//  implicit def tagWrapped[A, B]: Wrapped[A @@ B, A] = new Wrapped[A @@ B, A] {
-//    val wrapped: Iso[A @@ B, A] =
-//      Iso(Tag.unwrap[A, B])(Tag.apply)
-//  }
+
+  @OnlyInScalaz
+  implicit def tagWrapped[A, B]: Wrapped[A @@ B, A] = new Wrapped[A @@ B, A] {
+    val wrapped: Iso[A @@ B, A] =
+      Iso(Tag.unwrap[A, B])(Tag.apply)
+  }
 }

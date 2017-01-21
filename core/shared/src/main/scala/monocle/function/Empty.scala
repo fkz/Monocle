@@ -1,6 +1,6 @@
 package monocle.function
 
-import monocle.{Iso, Prism}
+import monocle.{Iso, OnlyInScalaz, Prism}
 
 import scala.annotation.implicitNotFound
 
@@ -67,22 +67,26 @@ object Empty extends EmptyFunctions {
   /************************************************************************************************/
   /** Scalaz instances                                                                            */
   /************************************************************************************************/
-//  import monocle.std.maybe.nothing
-//  import scalaz.{==>>, IList, ISet, Maybe}
-//
-//  implicit def iListEmpty[A]: Empty[IList[A]] = new Empty[IList[A]] {
-//    def empty = Prism[IList[A], Unit](l => if(l.isEmpty) Some(()) else None)(_ => IList.empty)
-//  }
-//
-//  implicit def iMapEmpty[K, V]: Empty[K ==>> V] = new Empty[K ==>> V] {
-//    def empty = Prism[K ==>> V, Unit](m => if(m.isEmpty) Some(()) else None)(_ => ==>>.empty)
-//  }
-//
-//  implicit def emptyISet[A]: Empty[ISet[A]] = new Empty[ISet[A]] {
-//    def empty = Prism[ISet[A], Unit](s => if(s.isEmpty) Some(()) else None)(_ => ISet.empty[A])
-//  }
-//
-//  implicit def maybeEmpty[A]: Empty[Maybe[A]] = new Empty[Maybe[A]]{
-//    def empty = nothing
-//  }
+  import monocle.std.maybe.nothing
+  //  import scalaz.{==>>, IList, ISet, Maybe}
+
+  @OnlyInScalaz
+  implicit def iListEmpty[A]: Empty[IList[A]] = new Empty[IList[A]] {
+    def empty = Prism[IList[A], Unit](l => if(l.isEmpty) Some(()) else None)(_ => IList.empty)
+  }
+
+  @OnlyInScalaz
+  implicit def iMapEmpty[K, V]: Empty[K ==>> V] = new Empty[K ==>> V] {
+    def empty = Prism[K ==>> V, Unit](m => if(m.isEmpty) Some(()) else None)(_ => ==>>.empty)
+  }
+
+  @OnlyInScalaz
+  implicit def emptyISet[A]: Empty[ISet[A]] = new Empty[ISet[A]] {
+    def empty = Prism[ISet[A], Unit](s => if(s.isEmpty) Some(()) else None)(_ => ISet.empty[A])
+  }
+
+  @OnlyInScalaz
+  implicit def maybeEmpty[A]: Empty[Maybe[A]] = new Empty[Maybe[A]]{
+    def empty = nothing
+  }
 }

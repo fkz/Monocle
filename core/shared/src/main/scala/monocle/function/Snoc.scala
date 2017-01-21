@@ -7,6 +7,8 @@ import scala.annotation.implicitNotFound
 import cats.Applicative
 import monocle.catssupport.Implicits._
 
+import monocle.OnlyInScalaz
+
 /**
  * Typeclass that defines a [[Prism]] between an `S` and its init `S` and last `S`
  * @tparam S source of [[Prism]] and init of [[Prism]] target
@@ -84,11 +86,12 @@ object Snoc extends SnocFunctions {
   /** Scalaz instances                                                                            */
   /************************************************************************************************/
 //  import scalaz.IList
-//
-//  implicit def iListSnoc[A]: Snoc[IList[A], A] = new Snoc[IList[A], A]{
-//    val snoc = Prism[IList[A], (IList[A], A)](
-//      il => Applicative[Option].apply2(il.initOption, il.lastOption)((_,_))){
-//      case (init, last) => init :+ last
-//    }
-//  }
+
+  @OnlyInScalaz
+  implicit def iListSnoc[A]: Snoc[IList[A], A] = new Snoc[IList[A], A]{
+    val snoc = Prism[IList[A], (IList[A], A)](
+      il => Applicative[Option].apply2(il.initOption, il.lastOption)((_,_))){
+      case (init, last) => init :+ last
+    }
+  }
 }
